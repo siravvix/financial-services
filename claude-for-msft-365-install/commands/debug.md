@@ -132,6 +132,13 @@ Both **dry-run by default** — nothing is removed without `--apply` /
 `-Apply`. No-args lists every registered add-in so you confirm the ID
 first. Other add-ins are never affected.
 
+**You must fully restart the Office app after clearing.** Removing the
+file/registry entry does nothing until the app re-reads it on launch — and
+a *backgrounded* app counts as still running. Quit **and reopen** Excel /
+Word / PowerPoint, confirming no lingering process first:
+`pkill -f "Microsoft Excel"` (macOS) / check Task Manager (Windows). The
+script also prints this reminder when it finishes.
+
 **Deleting local/sideloaded manifests by ID is safe and works.** In
 practice, removing just the one add-in's file (macOS) or registry value
 (Windows) cleanly drops that add-in and leaves the rest loading normally —
@@ -151,8 +158,8 @@ don't let it scare you off the surgical path here.
 > stale, prefer waiting out the service TTL or redeploying with a fresh
 > `<Id>` (below) over hand-deleting that cache.
 
-Relaunch. If still stale, the service-side cache hasn't caught up. Wait, or
-use a fresh `<Id>` (below).
+If it's still stale after the restart, the service-side cache hasn't caught
+up. Wait, or use a fresh `<Id>` (below).
 
 Microsoft's cache-clear doc: https://learn.microsoft.com/en-us/office/dev/add-ins/testing/clear-cache
 
