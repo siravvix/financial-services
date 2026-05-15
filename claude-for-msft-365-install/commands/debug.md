@@ -90,36 +90,40 @@ Admin Center → Integrated apps → your add-in → check the listed version.
 
 Quit Excel/PowerPoint first, then:
 
-This clears the cached add-in manifests **inside** each app's container —
-it does not delete the container or any user documents. It removes the
-**contents** of the `wef` cache, not the folder itself, with guards so a
-missing path is skipped rather than erroring.
-
-> ⚠️ This also removes any **locally sideloaded** manifests in `wef` (see
-> [Sideload a manifest](#sideload-a-manifest-for-local-debugging)) — you'll
-> need to re-sideload after. If you only want to drop a single sideloaded
-> manifest, use the targeted removal in that section instead.
+The `wef` cache holds **every** add-in side by side, each file named
+`<addin-id>.manifest-*.xml`. Don't wipe the folder — that kills unrelated
+add-ins (other sideloads, dev/staging variants). Delete only **your**
+add-in's ID, read straight from the manifest you deployed.
 
 **macOS:**
 ```bash
+MANIFEST="$HOME/path/to/manifest.xml"   # the manifest you deployed
+ADDIN_ID="$(xmllint --xpath 'string(/*[local-name()="OfficeApp"]/*[local-name()="Id"])' "$MANIFEST" 2>/dev/null \
+  || grep -oE '<Id>[^<]+</Id>' "$MANIFEST" | head -1 | sed -E 's/<\/?Id>//g')"
+echo "Clearing cached manifests for add-in $ADDIN_ID"
 for app in Excel Word Powerpoint; do
-  base="$HOME/Library/Containers/com.microsoft.$app/Data"
-  [ -d "$base/Library/Caches/Microsoft/Office/16.0/Wef" ] && \
-    rm -rf "$base/Library/Caches/Microsoft/Office/16.0/Wef"/* && \
-    echo "cleared $app Wef cache"
-  [ -d "$base/Documents/wef" ] && \
-    rm -rf "$base/Documents/wef"/* && \
-    echo "cleared $app wef manifests"
+  dir="$HOME/Library/Containers/com.microsoft.$app/Data/Documents/wef"
+  [ -d "$dir" ] || continue
+  for f in "$dir/$ADDIN_ID".manifest*.xml "$dir/$ADDIN_ID".xml; do
+    [ -f "$f" ] && rm -f "$f" && echo "removed $f"
+  done
 done
 ```
 
-(If the `Library/Caches/.../Wef` path doesn't exist on a given machine, the
-guard skips it — older builds keep the cache only under `Documents/wef`.)
+This touches only files whose name starts with your add-in's `<Id>` —
+other add-ins in `wef` are left alone. (The cached files are named like
+`e3e0c7c8-….manifest-dev.xml`; the glob matches any suffix for that ID.)
 
-**Windows:** delete the contents of the Wef folder, not the folder itself:
-```cmd
-del /q /s "%LOCALAPPDATA%\Microsoft\Office\16.0\Wef\*" 2>nul
+**Windows:** same idea — delete only the files prefixed with the add-in ID:
+```powershell
+$manifest = "C:\path\to\manifest.xml"
+$addinId  = ([xml](Get-Content $manifest)).OfficeApp.Id
+Get-ChildItem "$env:LOCALAPPDATA\Microsoft\Office\16.0\Wef" -Recurse -Filter "$addinId*" `
+  -ErrorAction SilentlyContinue | Remove-Item -Force -Verbose
 ```
+
+If you don't have the manifest handy, run `ls`/`dir` on the `wef` folder
+first, identify your add-in's ID from the filenames, and delete just those.
 
 Relaunch. If still stale, the service-side cache hasn't caught up. Wait, or
 use a fresh `<Id>` (below).
