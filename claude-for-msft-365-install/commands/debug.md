@@ -178,10 +178,11 @@ Give the customer this (they replace the path with their own):
 
 ```bash
 MANIFEST="$HOME/path/to/manifest.xml"
+NAME="$(basename "$MANIFEST")"
 for app in Excel Word Powerpoint; do
   dest="$HOME/Library/Containers/com.microsoft.$app/Data/Documents/wef"
   mkdir -p "$dest"
-  cp "$MANIFEST" "$dest/"
+  cp "$MANIFEST" "$dest/$NAME"
 done
 ```
 
@@ -193,10 +194,17 @@ to be sure no process lingers, since a backgrounded app won't rescan the
 folder. The add-in appears under **Insert → My Add-ins** (look under the
 **Developer Add-ins** / shared-folder group), then pin it.
 
-To stop sideloading, delete the copied manifest from each `wef` folder:
+To stop sideloading, delete **only the specific manifest you copied** from
+each `wef` folder — do not `rm -rf` the `wef` folder itself (it can hold other
+sideloaded add-ins and Office state):
 
 ```bash
-rm -f "$HOME/Library/Containers/com.microsoft.Excel/Data/Documents/wef/manifest.xml"
+MANIFEST="$HOME/path/to/manifest.xml"   # same path you sideloaded
+NAME="$(basename "$MANIFEST")"
+for app in Excel Word Powerpoint; do
+  target="$HOME/Library/Containers/com.microsoft.$app/Data/Documents/wef/$NAME"
+  [ -f "$target" ] && rm -f "$target" && echo "removed $target"
+done
 ```
 
 **Notes (both platforms):**
