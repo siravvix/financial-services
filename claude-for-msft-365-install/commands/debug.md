@@ -132,12 +132,22 @@ Both **dry-run by default** — nothing is removed without `--apply` /
 `-Apply`. No-args lists every registered add-in so you confirm the ID
 first. Other add-ins are never affected.
 
+**Deleting local/sideloaded manifests by ID is safe and works.** In
+practice, removing just the one add-in's file (macOS) or registry value
+(Windows) cleanly drops that add-in and leaves the rest loading normally —
+we do this routinely. Microsoft's "don't delete individual files" warning
+is about a *different* cache (below), not these local dev/sideload entries;
+don't let it scare you off the surgical path here.
+
 > **Centrally-deployed (Admin Center) staleness on Windows** is a
 > *different* cache: `%LOCALAPPDATA%\Microsoft\Office\16.0\Wef\<guid>\…`,
-> stored under opaque hashes, **not** by add-in ID. Microsoft's guidance
-> is to clear that folder's contents as a whole — *"deleting individual
-> manifest files can cause all add-ins to stop loading."* These scripts
-> deliberately do **not** touch it; if a centrally-deployed update is
+> stored under opaque hashes, **not** by add-in ID. Microsoft's official
+> guidance is conservative — clear that folder's contents as a whole
+> because *"deleting individual manifest files can cause all add-ins to
+> stop loading."* In practice targeted deletion there can work too, but
+> the filenames aren't ID-mapped so it's hard to be surgical — which is
+> why these scripts deliberately do **not** touch it. If a
+> centrally-deployed update is
 > stale, prefer waiting out the service TTL or redeploying with a fresh
 > `<Id>` (below) over hand-deleting that cache.
 
