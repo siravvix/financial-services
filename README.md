@@ -12,9 +12,11 @@ Everything here is available **two ways from one source**: install it as a [Clau
 >
 > **My focus areas:** Earnings Reviewer (testing against tech sector transcripts) and Model Builder (3-statement + DCF). I'm not actively using the fund admin / finance ops agents.
 >
-> **Test tickers I've been using:** MSFT, GOOGL, META, NVDA — mostly large-cap tech where transcript quality is high and there's plenty of historical data to validate model outputs against.
+> **Test tickers I've been using:** MSFT, GOOGL, META, NVDA — mostly large-cap tech where transcript quality is high and there's plenty of historical data to validate model outputs against. Also starting to test AAPL for services segment breakout modeling.
 >
 > **Notes from testing:** NVDA earnings transcripts tend to trip up the Earnings Reviewer on guidance language — the forward-looking statements are unusually hedged. Worth flagging if you're using this for semis coverage.
+>
+> **Model Builder defaults I've changed locally:** DCF terminal growth rate default nudged from 3.0% → 2.5% and WACC floor raised to 8% — felt more conservative and appropriate for the current rate environment. See `plugins/vertical-plugins/equity-research/model-builder/config.yaml`.
 
 What's in the repo:
 
@@ -30,6 +32,4 @@ Each agent plugin is **self-contained** — it bundles the skills it uses, so in
 | Function | Agent | What it does |
 |---|---|---|
 | **Coverage & advisory** | **[Pitch Agent](./plugins/agent-plugins/pitch-agent)** | Comps, precedents, LBO → branded pitch deck, end to end |
-| | **[Meeting Prep Agent](./plugins/agent-plugins/meeting-prep-agent)** | Briefing pack before every client meeting |
-| **Research & modeling** | **[Market Researcher](./plugins/agent-plugins/market-researcher)** | Sector or theme → industry overview, competitive landscape, peer comps, ideas shortlist |
-| | *
+| | **[Meeting Prep Agent](./plugins/agent-plugins/meeting-prep-agent)** | Briefing pac
