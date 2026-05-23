@@ -11,6 +11,8 @@ Everything here is available **two ways from one source**: install it as a [Clau
 > **Personal fork** — I'm using this primarily to explore the Earnings Reviewer and Model Builder agents for equity research workflows. The upstream repo is at [anthropics/financial-services](https://github.com/anthropics/financial-services).
 >
 > **My focus areas:** Earnings Reviewer (testing against tech sector transcripts) and Model Builder (3-statement + DCF). I'm not actively using the fund admin / finance ops agents.
+>
+> **Test tickers I've been using:** MSFT, GOOGL, META, NVDA — mostly large-cap tech where transcript quality is high and there's plenty of historical data to validate model outputs against.
 
 What's in the repo:
 
@@ -29,5 +31,4 @@ Each agent plugin is **self-contained** — it bundles the skills it uses, so in
 | | **[Meeting Prep Agent](./plugins/agent-plugins/meeting-prep-agent)** | Briefing pack before every client meeting |
 | **Research & modeling** | **[Market Researcher](./plugins/agent-plugins/market-researcher)** | Sector or theme → industry overview, competitive landscape, peer comps, ideas shortlist |
 | | **[Earnings Reviewer](./plugins/agent-plugins/earnings-reviewer)** ⭐ | Earnings call + filings → model update → note draft |
-| | **[Model Builder](./plugins/agent-plugins/model-builder)** ⭐ | DCF, LBO, 3-statement, comps — live in Excel |
-| **Fund admin & finance ops** | **[Valuation Reviewer](./plugins/agent-plugins/valuation-reviewer)** | Ingests GP packages, runs valuation t
+| | **[Model Builder](./plugins/agent-plugins/model-builder)** ⭐ | D
